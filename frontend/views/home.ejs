@@ -1,0 +1,42 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script>
+
+function OpenRequest(id){
+    host = window.location.host;
+    host_without_port = host.split(':')[0];
+    new_host = host_without_port + ":8080";
+    $.ajax({
+      type: 'POST',
+      url: 'http://'+ new_host +'/zones/' + id + "/open",
+      success: function(resultData) {
+         alert(resultData);
+      }
+    });    
+
+}
+
+function CloseRequest(id){
+    $.ajax({
+      type: 'POST',
+      url: 'http://'+ new_host +'/zones/' + id + "/close",
+      success: function(resultData) {
+         alert(resultData);
+      }
+    });    
+
+}
+
+</script>
+
+<h1>Zone 1</h1>
+<button value="0" onclick="OpenRequest(this.value)">Apri Zona </button>
+<button value="0" onclick="CloseRequest(this.value)">Chiudi Zona </button>
+
+<h1>Zone 2</h1>
+<button value="1" onclick="OpenRequest(this.value)">Apri Zona </button>
+<button value="1" onclick="CloseRequest(this.value)">Chiudi Zona </button>
+
+<h1>Zone 3</h1>
+<button value="2" onclick="OpenRequest(this.value)">Apri Zona </button>
+<button value="2" onclick="CloseRequest(this.value)">Chiudi Zona </button>
+
