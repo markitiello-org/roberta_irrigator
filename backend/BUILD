@@ -8,6 +8,7 @@ py_binary(
 py_binary(
     name = "web_api_utils",
     srcs = ["web_api_utils.py"],
-    deps = ["//backend/datatype:Zone", "//backend/datatype:Log", "//backend/db:SqlLite", "//backend/hw_io:gpio", "//backend/web_service/model:zone_web"],
+    deps = ["//backend/datatype:Zone", "//backend/datatype:Log", "//backend/db:SqlLite", "//backend/hw_io:gpio", "//backend/web_service/model:zone_web",
+            "@pip//flask", "@pip//rpyc", "@pip//waitress"],
     visibility = ["//backend:__subpackages__"], 
 )

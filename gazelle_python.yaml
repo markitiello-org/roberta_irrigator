@@ -7,11 +7,15 @@
 manifest:
   modules_mapping:
     annotated_types: annotated_types
+    blinker: blinker
+    click: click
     colorama: colorama
     copier: copier
     dunamai: dunamai
+    flask: flask
     funcy: funcy
     iniconfig: iniconfig
+    itsdangerous: itsdangerous
     jinja2: jinja2
     jinja2_ansible_filters: jinja2_ansible_filters
     markupsafe: MarkupSafe
@@ -30,7 +34,9 @@ manifest:
     rpyc: rpyc
     typing_extensions: typing_extensions
     typing_inspection: typing_inspection
+    waitress: waitress
     wcwidth: wcwidth
+    werkzeug: werkzeug
     yaml: PyYAML
   pip_repository:
     name: pip
