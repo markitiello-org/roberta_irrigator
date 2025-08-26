@@ -10,6 +10,7 @@ from backend.hw_io.gpio import PiGpio
 from backend.dao.ZoneDAO import ZoneDAO
 import rpyc
 from threading import Thread
+import threading
 
 
 
@@ -28,49 +29,6 @@ class Executor:
     def LoadZone(self):
         return ZoneDAO.GetZoneById()
 
-    def StartUp(self):
-        self._db = SqlLite.get_instance()
-        db_exists = self._db.DbExists()
-        self._db.Init()
-        if not db_exists:
-            print("Create db")
-            self._db.CreateDb()
-            zone_to_add_1 = Zone("Zona 1 ", 37)
-            zone_to_add_2 = Zone("Zona 2 ", 38)
-            zone_to_add_3 = Zone("Zona 3 ", 40)
-            irrigation_info_to_add_1 = IrrigationInfo(
-                datetime.time(00, 00, 00, 00), 120
-            )
-            irrigation_info_to_add_2 = IrrigationInfo(datetime.time(5, 00, 00, 00), 120)
-            irrigation_info_to_add_3 = IrrigationInfo(
-                datetime.time(13, 00, 00, 00), 120
-            )
-            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_1)
-            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_2)
-            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_3)
-            irrigation_info_to_add_1_zone_2 = IrrigationInfo(
-                datetime.time(00, 2, 30, 00), 120
-            )
-            irrigation_info_to_add_2_zone_2 = IrrigationInfo(
-                datetime.time(5, 2, 30, 00), 120
-            )
-            irrigation_info_to_add_3_zone_2 = IrrigationInfo(
-                datetime.time(13, 2, 30, 00), 120
-            )
-            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_1_zone_2)
-            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_2_zone_2)
-            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_3_zone_2)
-            irrigation_info_to_add_1_zone_3 = IrrigationInfo(
-                datetime.time(00, 4, 30, 00), 120
-            )
-            irrigation_info_to_add_2_zone_3 = IrrigationInfo(
-                datetime.time(5, 4, 30, 00), 120
-            )
-            zone_to_add_3.irrigation_info.append(irrigation_info_to_add_1_zone_3)
-            zone_to_add_3.irrigation_info.append(irrigation_info_to_add_2_zone_3)
-            ZoneDAO.AddNewIrrigator(zone_to_add_1)
-            ZoneDAO.AddNewIrrigator(zone_to_add_2)
-            ZoneDAO.AddNewIrrigator(zone_to_add_3)
 
     def SetCurrentTimeInformation(self):
         now = datetime.datetime.now()
@@ -116,9 +74,7 @@ class Executor:
 
     def Main(self):
         try:
-            self.StartUp()
             print("Setting up pins")
-            self.zone_list = self.LoadZone()
             output_pin = []
             print("Setting up pins")
             for zone in self.zone_list:
@@ -140,6 +96,7 @@ class Executor:
             self.LogInformation(f"Critical error in main loop: {ex}", is_error=True)
             logging.error(f"Main loop error: {ex}")
             logging.critical("Hardware or database failure - forcing shutdown")
+            print (f"Critical error in main loop: {ex}")
             self.CloseAll()
             if self._db:
                 self._db.CloseConnection()
@@ -185,13 +142,59 @@ class Executor:
     @classmethod
     def instance(self):
         if self._instance is None:
-            print("Creating new instance")
+            print("Executor - Creating new instance")
             self._instance = self.__new__(self)
         return self._instance
 
 
 class RpcService(rpyc.Service):
     executor = None
+
+    def StartUp(self):
+        print("Starting up the service...")
+        self._db = SqlLite.get_instance()
+        print("Database instance obtained")
+        db_exists = self._db.DbExists()
+        print(f"Database exists: {db_exists}")
+        if not db_exists:
+            print("Create db")
+            self._db.CreateDb()
+            zone_to_add_1 = Zone("Zona 1 ", 37)
+            zone_to_add_2 = Zone("Zona 2 ", 38)
+            zone_to_add_3 = Zone("Zona 3 ", 40)
+            irrigation_info_to_add_1 = IrrigationInfo(
+                datetime.time(00, 00, 00, 00), 120
+            )
+            irrigation_info_to_add_2 = IrrigationInfo(datetime.time(5, 00, 00, 00), 120)
+            irrigation_info_to_add_3 = IrrigationInfo(
+                datetime.time(13, 00, 00, 00), 120
+            )
+            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_1)
+            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_2)
+            zone_to_add_1.irrigation_info.append(irrigation_info_to_add_3)
+            irrigation_info_to_add_1_zone_2 = IrrigationInfo(
+                datetime.time(00, 2, 30, 00), 120
+            )
+            irrigation_info_to_add_2_zone_2 = IrrigationInfo(
+                datetime.time(5, 2, 30, 00), 120
+            )
+            irrigation_info_to_add_3_zone_2 = IrrigationInfo(
+                datetime.time(13, 2, 30, 00), 120
+            )
+            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_1_zone_2)
+            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_2_zone_2)
+            zone_to_add_2.irrigation_info.append(irrigation_info_to_add_3_zone_2)
+            irrigation_info_to_add_1_zone_3 = IrrigationInfo(
+                datetime.time(00, 4, 30, 00), 120
+            )
+            irrigation_info_to_add_2_zone_3 = IrrigationInfo(
+                datetime.time(5, 4, 30, 00), 120
+            )
+            zone_to_add_3.irrigation_info.append(irrigation_info_to_add_1_zone_3)
+            zone_to_add_3.irrigation_info.append(irrigation_info_to_add_2_zone_3)
+            ZoneDAO.AddNewIrrigator(zone_to_add_1)
+            ZoneDAO.AddNewIrrigator(zone_to_add_2)
+            ZoneDAO.AddNewIrrigator(zone_to_add_3)
 
     def exposed_start(self):
         if self._executor.AmIRunning():
@@ -218,10 +221,14 @@ class RpcService(rpyc.Service):
         return self._executor.zone_list
 
     def exposed_OpenZone(self, id: int):
-        self._executor.zone_list[id].OverrideOpen(True)
+        thread_id = threading.get_ident()
+        print(f"Thread ID: {thread_id}")
+        zone = next((x for x in self._executor.zone_list if x.id == id), None)
+        zone.OverrideOpen(True)
 
     def exposed_CloseZone(self, id):
-        self._executor.zone_list[id].OverrideOpen(False)
+        zone = next((x for x in self._executor.zone_list if x.id == id), None)
+        zone.OverrideOpen(False)
 
     def exposed_GetZoneInfo(self, id):
         return self._executor.zone_list[id]
@@ -229,7 +236,10 @@ class RpcService(rpyc.Service):
     def __init__(self):
         self._executor = Executor.instance()
         try:
+            self.StartUp()
+            self._executor.zone_list = self._executor.LoadZone()
             self._executor.Start()
+            print("Executor started")
             logging.info("Executor started successfully")
         except Exception as ex:
             logging.error(f"Error starting executor: {ex}")

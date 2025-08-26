@@ -11,7 +11,7 @@ class ZoneWeb:
     last_irrigation_date = None
     irrigation_info = list()
 
-    def __init__(self, name, id, is_open, is_override, irrigation_info, last_irrigation_date:str) -> None:
+    def __init__(self, name, id, is_open, is_override, irrigation_info, last_irrigation_date:str=None) -> None:
         self.name = name
         self.id = id
         self.is_open = is_open
