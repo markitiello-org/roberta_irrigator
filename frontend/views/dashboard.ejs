@@ -38,65 +38,8 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr class="border-t border-t-[#d0dde7]">
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-120 h-[72px] px-4 py-2 w-[400px] text-[#0e151b] text-sm font-normal leading-normal">
-                        Front Yard
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-240 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
-                        <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#e7eef3] text-[#0e151b] text-sm font-medium leading-normal w-full"
-                        >
-                          <span class="truncate">On</span>
-                        </button>
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-360 h-[72px] px-4 py-2 w-[400px] text-[#4e7997] text-sm font-normal leading-normal">
-                        Today, 6:00 PM
-                      </td>
-                    </tr>
-                    <tr class="border-t border-t-[#d0dde7]">
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-120 h-[72px] px-4 py-2 w-[400px] text-[#0e151b] text-sm font-normal leading-normal">
-                        Back Yard
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-240 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
-                        <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#e7eef3] text-[#0e151b] text-sm font-medium leading-normal w-full"
-                        >
-                          <span class="truncate">Off</span>
-                        </button>
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-360 h-[72px] px-4 py-2 w-[400px] text-[#4e7997] text-sm font-normal leading-normal">
-                        Tomorrow, 7:00 AM
-                      </td>
-                    </tr>
-                    <tr class="border-t border-t-[#d0dde7]">
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-120 h-[72px] px-4 py-2 w-[400px] text-[#0e151b] text-sm font-normal leading-normal">Garden</td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-240 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
-                        <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#e7eef3] text-[#0e151b] text-sm font-medium leading-normal w-full"
-                        >
-                          <span class="truncate">On</span>
-                        </button>
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-360 h-[72px] px-4 py-2 w-[400px] text-[#4e7997] text-sm font-normal leading-normal">
-                        Today, 7:00 PM
-                      </td>
-                    </tr>
-                    <tr class="border-t border-t-[#d0dde7]">
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-120 h-[72px] px-4 py-2 w-[400px] text-[#0e151b] text-sm font-normal leading-normal">
-                        Vegetable Patch
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-240 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
-                        <button
-                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#e7eef3] text-[#0e151b] text-sm font-medium leading-normal w-full"
-                        >
-                          <span class="truncate">Off</span>
-                        </button>
-                      </td>
-                      <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-360 h-[72px] px-4 py-2 w-[400px] text-[#4e7997] text-sm font-normal leading-normal">
-                        Tomorrow, 8:00 AM
-                      </td>
-                    </tr>
+                  <tbody id="zone-table-body">
+                    <!-- Zones will be loaded dynamically -->
                   </tbody>
                 </table>
               </div>
@@ -193,5 +136,154 @@
         </div>
       </div>
     </div>
+    
+    <script>
+      // Function to format time for display
+      function formatTime(timeStr) {
+        if (!timeStr) return 'N/A';
+        try {
+          const [hours, minutes] = timeStr.split(':');
+          const hour = parseInt(hours);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const displayHour = hour % 12 || 12;
+          return `${displayHour}:${minutes} ${ampm}`;
+        } catch {
+          return timeStr;
+        }
+      }
+
+      // Function to get next irrigation time
+      function getNextIrrigation(irrigationInfo) {
+        if (!irrigationInfo || irrigationInfo.length === 0) return 'Not scheduled';
+        
+        const now = new Date();
+        const today = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+        
+        // Find next irrigation time
+        for (const schedule of irrigationInfo) {
+          if (schedule.day_of_the_week && schedule.day_of_the_week.includes(today)) {
+            return `Today, ${formatTime(schedule.time_to_start)}`;
+          }
+        }
+        
+        // If no irrigation today, show next available day
+        return 'Next available day';
+      }
+
+      // Function to toggle zone status
+      async function toggleZone(zoneId, isOpen) {
+        try {
+          const action = isOpen ? 'close' : 'open';
+          
+          // Show confirmation dialog only when opening a zone
+          if (!isOpen) {
+            const zoneName = document.querySelector(`[onclick="toggleZone(${zoneId}, ${isOpen})"]`)
+              ?.closest('tr')?.querySelector('td')?.textContent?.trim() || 'Zone';
+            
+            if (!confirm(`Are you sure you want to turn ON ${zoneName}?`)) {
+              return;
+            }
+          }
+          
+          const response = await fetch(`http://localhost:8080/zones/${zoneId}/${action}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+          
+          if (response.ok) {
+            // Refresh the zone data
+            loadZones();
+          } else {
+            console.error('Failed to toggle zone:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error toggling zone:', error);
+        }
+      }
+
+      // Function to load and display zones
+      async function loadZones() {
+        try {
+          const response = await fetch('http://localhost:8080/zones');
+          const zones = await response.json();
+          
+          const tbody = document.getElementById('zone-table-body');
+          tbody.innerHTML = '';
+          
+          zones.forEach(zone => {
+            const isOpen = zone.is_open === 'True';
+            const statusColor = isOpen ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+            const statusText = isOpen ? 'On' : 'Off';
+            
+            const row = document.createElement('tr');
+            row.className = 'border-t border-t-[#d0dde7]';
+            
+            row.innerHTML = `
+              <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-120 h-[72px] px-4 py-2 w-[400px] text-[#0e151b] text-sm font-normal leading-normal">
+                ${zone.name}
+              </td>
+              <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-240 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                <button
+                  onclick="toggleZone(${zone.id}, ${isOpen})"
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 ${statusColor} text-sm font-medium leading-normal w-full transition-colors hover:opacity-80"
+                >
+                  <span class="truncate">${statusText}</span>
+                </button>
+              </td>
+              <td class="table-d641b1a4-d5fb-4b0a-ac44-f198b9246e08-column-360 h-[72px] px-4 py-2 w-[400px] text-[#4e7997] text-sm font-normal leading-normal">
+                ${getNextIrrigation(zone.irrigation_info)}
+              </td>
+            `;
+            
+            tbody.appendChild(row);
+          });
+          
+        } catch (error) {
+          console.error('Error loading zones:', error);
+          const tbody = document.getElementById('zone-table-body');
+          tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">Error loading zones. Please check if the API is running.</td></tr>';
+        }
+      }
+
+      // Function to handle manual control buttons
+      async function controlAllZones(action) {
+        try {
+          const response = await fetch('http://localhost:8080/zones');
+          const zones = await response.json();
+          
+          // Send requests for all zones
+          const promises = zones.map(zone => 
+            fetch(`http://localhost:8080/zones/${zone.id}/${action}`, { method: 'POST' })
+          );
+          
+          await Promise.all(promises);
+          loadZones(); // Refresh after all operations
+        } catch (error) {
+          console.error(`Error ${action}ing all zones:`, error);
+        }
+      }
+
+      // Update manual control buttons
+      document.addEventListener('DOMContentLoaded', function() {
+        // Find and update the manual control buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+          const text = button.textContent.trim();
+          if (text === 'Turn All Zones On') {
+            button.onclick = () => controlAllZones('open');
+          } else if (text === 'Turn All Zones Off') {
+            button.onclick = () => controlAllZones('close');
+          }
+        });
+        
+        // Load zones on page load
+        loadZones();
+        
+        // Refresh zones every 10 seconds
+        setInterval(loadZones, 10000);
+      });
+    </script>
   </body>
 </html>
