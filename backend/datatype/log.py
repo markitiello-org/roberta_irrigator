@@ -3,7 +3,6 @@ import datetime
 from enum import Enum
 
 
-
 class EventId(Enum):
     irrigation_start = 0
     irrigation_stop = 1
@@ -11,12 +10,12 @@ class EventId(Enum):
     log_out = 3
     general = 4
 
+
 class Log:
     date_time = datetime.datetime.now()
-    event_id : EventId = EventId.general
+    event_id: EventId = EventId.general
     zone_id: int = None
     log = ""
-
 
     def __init__(self, zone_id, date_time, event_id, log) -> None:
         self.zone_id = zone_id
@@ -35,5 +34,8 @@ class Log:
         )
 
     def serialize(self):
-        return {"date_time": self.date_time, "event": str(self.event_id), "log": self.log}
-
+        return {
+            "date_time": self.date_time,
+            "event": str(self.event_id),
+            "log": self.log,
+        }
