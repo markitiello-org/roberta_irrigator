@@ -9,8 +9,6 @@ write_aspect_bazelrc_presets(
         "convenience",
         "correctness",
         "debug",
-
-
         "performance",
     ],
 )

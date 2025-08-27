@@ -21,10 +21,10 @@ def py3_image(name, binary, root = "/", layer_groups = {}, env = {}, workdir = N
     runfiles_dir = "{}.runfiles".format(binary_path)
     repo_name = binary.repo_name or "_main"
     env = dict({
-        "BAZEL_WORKSPACE": repo_name, 
+        "BAZEL_WORKSPACE": repo_name,
         "RUNFILES_DIR": runfiles_dir,
     }, **env)
-    
+
     oci_image(
         name = name + "_image",
         base = base,

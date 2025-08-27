@@ -4,14 +4,13 @@ import os
 import sys
 import time
 from backend.datatype.Zone import Zone
-from backend.datatype.IrrigationInfo import IrrigationInfo
+from backend.datatype.irrigation_info import IrrigationInfo
 from backend.db.SqlLite import SqlLite
 from backend.hw_io.gpio import PiGpio
 from backend.dao.ZoneDAO import ZoneDAO
 import rpyc
 from threading import Thread
 import threading
-
 
 
 class Executor:
@@ -28,7 +27,6 @@ class Executor:
 
     def LoadZone(self):
         return ZoneDAO.GetZoneById()
-
 
     def SetCurrentTimeInformation(self):
         now = datetime.datetime.now()
@@ -96,7 +94,7 @@ class Executor:
             self.LogInformation(f"Critical error in main loop: {ex}", is_error=True)
             logging.error(f"Main loop error: {ex}")
             logging.critical("Hardware or database failure - forcing shutdown")
-            print (f"Critical error in main loop: {ex}")
+            print(f"Critical error in main loop: {ex}")
             self.CloseAll()
             if self._db:
                 self._db.CloseConnection()
@@ -106,7 +104,6 @@ class Executor:
             if self._db:
                 self._db.CloseConnection()
             self.Stop()
-
 
     def LogInformation(self, message, is_error=False):
         if is_error:
@@ -126,12 +123,14 @@ class Executor:
         self._stop_executor = False
         self._thread = Thread(target=self.Main, daemon=True)
         self._thread.start()
-        
+
     def WaitForShutdown(self, timeout=30):
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout)
             if self._thread.is_alive():
-                self.LogInformation("Thread did not shut down gracefully", is_error=True)
+                self.LogInformation(
+                    "Thread did not shut down gracefully", is_error=True
+                )
 
     def GetIrrigators(self):
         return self.zone_list
@@ -208,6 +207,7 @@ class RpcService(rpyc.Service):
             print(f"Error starting executor: {ex}")
             # Force immediate termination on startup failure
             os._exit(1)
+
     def exposed_stop(self):
         logging.info("Stop requested via RPC")
         self._executor.Stop()
@@ -247,6 +247,7 @@ class RpcService(rpyc.Service):
             # Force immediate termination on startup failure
             os._exit(1)
 
+
 if __name__ == "__main__":
     service = None
     server = None
@@ -257,20 +258,21 @@ if __name__ == "__main__":
             encoding="utf-8",
             level=logging.DEBUG,
         )
-        
+
         logging.info("Starting Roberta Irrigator service...")
         service = RpcService()
-        
+
         from rpyc.utils.server import ThreadedServer
+
         server = ThreadedServer(
             service,
             port=18871,
             protocol_config={"allow_public_attrs": True, "allow_pickle": True},
         )
-        
+
         logging.info("RPC Server starting on port 18871")
         server.start()
-        
+
     except KeyboardInterrupt:
         logging.info("Received shutdown signal")
     except Exception as ex:

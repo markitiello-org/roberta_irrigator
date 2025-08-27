@@ -14,7 +14,7 @@ def declare_targets(ctx):
                 kind = "py3_image",
                 name = "image",
                 attrs = {
-                    "binary": py_binary_target_name
+                    "binary": py_binary_target_name,
                 },
             )
             break

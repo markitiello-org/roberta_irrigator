@@ -13,44 +13,24 @@ included `.envrc` automates this for you.
 
 load("@bazel_env.bzl", "bazel_env")
 load("@multitool//:tools.bzl", MULTITOOL_TOOLS = "TOOLS")
+load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 
 package(default_visibility = ["//visibility:public"])
-
-
-load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 
 py_console_script_binary(
     name = "copier",
     pkg = "@pip//copier",
 )
 
-
-
-
 bazel_env(
     name = "bazel_env",
     toolchains = {
-
-
         "python": "@rules_python//python:current_py_toolchain",
-
-
-
     },
     tools = {
         # Mapping from tool binary name ($PATH entry) to Bazel label
-
         "buildifier": "@buildifier_prebuilt//:buildifier",
-
-
-
         "copier": ":copier",
-
-
-
-
-
         "python": "$(PYTHON3)",
-
     } | MULTITOOL_TOOLS,
 )

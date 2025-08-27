@@ -1,15 +1,15 @@
 import logging
-from backend.db.SqlLite import SqlLite
 
 
 class Log:
-
     @staticmethod
     def _Init(log_text, log_level):
         logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        level=logging.INFO,
-        datefmt='%Y-%m-%d %H:%M:%S', filename="markitiello_irrigator.log")
+            format="%(asctime)s %(levelname)-8s %(message)s",
+            level=logging.INFO,
+            datefmt="%Y-%m-%d %H:%M:%S",
+            filename="markitiello_irrigator.log",
+        )
 
     @staticmethod
     def Log(log_text, log_level):

@@ -14,7 +14,6 @@ ruff = lint_ruff_aspect(
 
 ruff_test = lint_test(aspect = ruff)
 
-
 shellcheck = lint_shellcheck_aspect(
     binary = "@multitool//tools/shellcheck",
     config = Label("//:.shellcheckrc"),

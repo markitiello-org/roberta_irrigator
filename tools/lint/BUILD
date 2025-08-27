@@ -5,11 +5,3 @@ we don't want to trigger eager fetches of these for builds which aren't running 
 """
 
 package(default_visibility = ["//:__subpackages__"])
-
-
-
-
-
-
-
-

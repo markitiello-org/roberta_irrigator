@@ -2,8 +2,9 @@
 """
 Interactive RPC client for manual testing
 """
+
 import rpyc
-import time
+
 
 def interactive_client():
     try:
@@ -18,44 +19,45 @@ def interactive_client():
         print("  close(id) - Close zone by ID")
         print("  stop() - Stop the service")
         print("  quit() - Exit client")
-        
+
         def status():
             return conn.root.AmIRunning()
-        
+
         def start():
             print("Starting executor...")
             return conn.root.start()
-        
+
         def zones():
             zones = conn.root.GetIrrigators()
             for i, zone in enumerate(zones):
-                print(f"Zone {i}: {zone.name} (Pin: {zone.gpio_pin}, Open: {zone.IsOpen()})")
+                print(
+                    f"Zone {i}: {zone.name} (Pin: {zone.gpio_pin}, Open: {zone.IsOpen()})"
+                )
             return zones
-        
+
         def zone(zone_id):
             return conn.root.GetZoneInfo(zone_id)
-        
+
         def open_zone(zone_id):
             print(f"Opening zone {zone_id}...")
             return conn.root.OpenZone(zone_id)
-        
+
         def close_zone(zone_id):
             print(f"Closing zone {zone_id}...")
             return conn.root.CloseZone(zone_id)
-        
+
         def stop():
             print("Stopping service...")
             return conn.root.stop()
-        
+
         # Make functions available in interactive mode
-        import readline  # Enable arrow keys in input
-        
+
         while True:
             try:
                 cmd = input("\nrpc> ").strip()
                 if not cmd:
                     continue
-                    
+
                 if cmd == "quit()":
                     break
                 elif cmd == "status()":
@@ -67,7 +69,9 @@ def interactive_client():
                 elif cmd.startswith("zone(") and cmd.endswith(")"):
                     zone_id = int(cmd[5:-1])
                     info = zone(zone_id)
-                    print(f"Zone {zone_id}: {info.name} - Open: {info.IsOpen()}, Override: {info.IsOverride()}")
+                    print(
+                        f"Zone {zone_id}: {info.name} - Open: {info.IsOpen()}, Override: {info.IsOverride()}"
+                    )
                 elif cmd.startswith("open(") and cmd.endswith(")"):
                     zone_id = int(cmd[5:-1])
                     open_zone(zone_id)
@@ -77,19 +81,22 @@ def interactive_client():
                 elif cmd == "stop()":
                     stop()
                 else:
-                    print("Unknown command. Try: status(), start(), zones(), zone(0), open(0), close(0), stop(), quit()")
-                    
+                    print(
+                        "Unknown command. Try: status(), start(), zones(), zone(0), open(0), close(0), stop(), quit()"
+                    )
+
             except KeyboardInterrupt:
                 print("\nExiting...")
                 break
             except Exception as e:
                 print(f"Error: {e}")
-        
+
         conn.close()
         print("Disconnected.")
-        
+
     except Exception as e:
         print(f"Connection failed: {e}")
+
 
 if __name__ == "__main__":
     interactive_client()

@@ -1,24 +1,21 @@
-
 """Targets in the repository root"""
 
 # We prefer BUILD instead of BUILD.bazel
 # gazelle:build_file_name BUILD
+
+load("@pip//:requirements.bzl", "all_whl_requirements")
+load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
+load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
 
 alias(
     name = "format",
     actual = "//tools/format",
 )
 
-
-
 exports_files(
     [".shellcheckrc"],
     visibility = ["//:__subpackages__"],
 )
-
-load("@pip//:requirements.bzl", "all_whl_requirements")
-load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
-load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
 
 exports_files(
     ["pyproject.toml"],
@@ -52,4 +49,3 @@ gazelle_python_manifest(
     modules_mapping = ":modules_map",
     pip_repository_name = "pip",
 )
-

@@ -1,10 +1,11 @@
-from backend.datatype.IrrigationInfo import IrrigationInfo
+from backend.datatype.irrigation_info import IrrigationInfo
 import datetime
 import logging
 import json
 from backend.dao.PersistentLogDAO import PersistentLogDAO
-from backend.datatype.Log import Log, EventId
+from backend.datatype.log import Log, EventId
 from backend.hw_io.gpio import PiGpio
+
 
 class Zone:
     name = ""
@@ -20,28 +21,32 @@ class Zone:
     _logger = None
     _active_irrigation = None
 
-    def __init__(self, name:str, gpio_pin:int, irrigation_info:list =None, id:int=0):
+    def __init__(
+        self, name: str, gpio_pin: int, irrigation_info: list = None, id: int = 0
+    ):
         self._logger = logging.getLogger()
         self.name = name
         self.gpio_pin = gpio_pin
         self.id = int(id)
-        if irrigation_info == None:
+        if irrigation_info is None:
             self.irrigation_info = list()
         else:
             self.irrigation_info = irrigation_info
         self.id = -1
 
     def _CheckIfIsRightDayOfTheWeekToOpen(
-        self, irrigation_info:IrrigationInfo, current_day_of_the_week
+        self, irrigation_info: IrrigationInfo, current_day_of_the_week
     ):
         return current_day_of_the_week in irrigation_info.day_of_the_week
 
     def GetLastIrrigationDate(self):
-        logs = PersistentLogDAO.GetLogs(self.id, EventId.irrigation_start, number_of_logs_to_get=1)
+        logs = PersistentLogDAO.GetLogs(
+            self.id, EventId.irrigation_start, number_of_logs_to_get=1
+        )
         if len(logs) != 0:
             return logs[0].date_time
         return None
-    
+
     def Print(self):
         print(
             f"Id {self.id}, Name {self.name}, Gpio pin: {self.gpio_pin}, IrrigatorInfo: {self.irrigation_info} "
@@ -69,7 +74,7 @@ class Zone:
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),
                 event_id=EventId.irrigation_start,
-                log=f"Zone {self.name} opened"
+                log=f"Zone {self.name} opened",
             )
         )
 
@@ -84,7 +89,7 @@ class Zone:
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),
                 event_id=EventId.irrigation_stop,
-                log=f"Zone {self.name} closed"
+                log=f"Zone {self.name} closed",
             )
         )
 
@@ -137,6 +142,7 @@ class Zone:
                     self.LogInformation("Open command for timing", False)
                     self._OpenIt()
                     self._active_irrigation = irrigation
+
     def CheckIfNeedToClose(self: datetime.time, current_time):
         if not self._is_open:
             self.LogInformation("Already Closed", True)
@@ -156,12 +162,12 @@ class Zone:
         if not self._is_open:
             self.LogInformation("Emerency closing, already closed")
             return
-        open_time:datetime = None
+        open_time: datetime = None
         if self._is_override_open:
             open_time = self._last_irrigation_date
         else:
             open_time = self._active_irrigation.time_to_start
-        if open_time == None:
+        if open_time is None:
             self._CloseIt()
             return
         current_datatime = datetime.datetime.combine(
@@ -184,7 +190,7 @@ class Zone:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def __eq__(self, other):
-        if other == None or len(self.irrigation_info) != len(other.irrigation_info):
+        if other is None or len(self.irrigation_info) != len(other.irrigation_info):
             return False
         return (
             self.id == int(other.id)

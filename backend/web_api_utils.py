@@ -1,8 +1,6 @@
-from flask import Flask, jsonify, request, Blueprint
-from backend.datatype.Zone import Zone
+from flask import Flask, Blueprint
 from backend.web_service.model.zone_web import ZoneWeb
-from backend.datatype.IrrigationInfo import IrrigationInfo
-from datetime import datetime
+from backend.datatype.irrigation_info import IrrigationInfo
 import rpyc
 import json
 
@@ -58,8 +56,19 @@ def open_zone(zone_id):
 def info_zone(zone_id):
     c = rpyc.connect("localhost", 18871, config={"allow_public_attrs": True})
     zone = c.root.GetZoneInfo(int(zone_id))
-    zone_web= ZoneWeb(zone.name, zone.id, zone.IsOpen(), False, zone.irrigation_info, zone.GetLastIrrigationDate().strftime("%d-%m-%Y %H:%M:%S"))
-    return json.dumps(zone_web.serialize(),indent=2), 200, {"ContentType": "application/json"}
+    zone_web = ZoneWeb(
+        zone.name,
+        zone.id,
+        zone.IsOpen(),
+        False,
+        zone.irrigation_info,
+        zone.GetLastIrrigationDate().strftime("%d-%m-%Y %H:%M:%S"),
+    )
+    return (
+        json.dumps(zone_web.serialize(), indent=2),
+        200,
+        {"ContentType": "application/json"},
+    )
 
 
 @app.route("/zones/<zone_id>/close", methods=["POST"])

@@ -37,11 +37,11 @@ cleanup() {
     if [ -n "$ACTUAL_SERVER_PID" ]; then
         echo "Found server process (PID: $ACTUAL_SERVER_PID)..."
         # Try graceful shutdown first
-        kill -TERM $ACTUAL_SERVER_PID 2>/dev/null || true
+        kill -TERM "$ACTUAL_SERVER_PID" 2>/dev/null || true
         
         # Wait up to 5 seconds for graceful shutdown
         for i in {1..5}; do
-            if ! kill -0 $ACTUAL_SERVER_PID 2>/dev/null; then
+            if ! kill -0 "$ACTUAL_SERVER_PID" 2>/dev/null; then
                 echo "Server stopped gracefully."
                 break
             fi
@@ -49,9 +49,9 @@ cleanup() {
         done
         
         # Check if still running and force kill
-        if kill -0 $ACTUAL_SERVER_PID 2>/dev/null; then
+        if kill -0 "$ACTUAL_SERVER_PID" 2>/dev/null; then
             echo "Force killing server..."
-            kill -KILL $ACTUAL_SERVER_PID 2>/dev/null || true
+            kill -KILL "$ACTUAL_SERVER_PID" 2>/dev/null || true
             echo "Server force stopped."
         fi
     else
@@ -59,11 +59,11 @@ cleanup() {
     fi
     
     # Also cleanup the bazel wrapper process if still running
-    if kill -0 $SERVER_PID 2>/dev/null; then
+    if kill -0 "$SERVER_PID" 2>/dev/null; then
         echo "Cleaning up bazel wrapper process..."
-        kill -TERM $SERVER_PID 2>/dev/null || true
+        kill -TERM "$SERVER_PID" 2>/dev/null || true
         sleep 1
-        kill -KILL $SERVER_PID 2>/dev/null || true
+        kill -KILL "$SERVER_PID" 2>/dev/null || true
     fi
     
     # Show log file location and recent errors if any

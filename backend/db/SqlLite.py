@@ -6,6 +6,7 @@ import sys
 # tell interpreter where to look
 sys.path.insert(0, "..")
 
+
 class SqlLite:
     _instance = None
     _lock = threading.Lock()  # Class-level lock for singleton creation
@@ -31,7 +32,7 @@ class SqlLite:
 
     def __init__(self) -> None:
         # Evita di reinizializzare se già inizializzato
-        if hasattr(self, '_initialized') and self._initialized:
+        if hasattr(self, "_initialized") and self._initialized:
             return
         self._conn = None
         self._db_lock = threading.RLock()  # Instance-level lock for database operations
@@ -62,7 +63,7 @@ class SqlLite:
                 print(f"Error creating db: {e}")
                 self.RemoveDb()
             finally:
-                self.CloseConnection()  
+                self.CloseConnection()
 
     def DbExists(self):
         return os.path.isfile(self._file_name)
@@ -73,7 +74,7 @@ class SqlLite:
                 # Enable thread safety and check same thread = False for multi-threaded access
                 self._conn = sqlite3.connect(self._file_name, check_same_thread=False)
                 # Enable WAL mode for better concurrent access
-                self._conn.execute('PRAGMA journal_mode=WAL;')
+                self._conn.execute("PRAGMA journal_mode=WAL;")
                 self._cursor = self._conn.cursor()
 
     def RemoveDb(self):
@@ -108,8 +109,7 @@ class SqlLite:
                 print(f"Error executing query: {e}")
                 raise
             finally:
-                self.CloseConnection()  
-
+                self.CloseConnection()
 
     def CloseConnection(self):
         with self._db_lock:
@@ -124,5 +124,5 @@ class SqlLite:
     def __del__(self):
         try:
             self.CloseConnection()
-        except:
-            pass  # Ignore errors during cleanup
+        except Exception as e:
+            print(f"Error closing connection: {e}")

@@ -24,7 +24,7 @@ def declare_targets(ctx):
                 name = path.base(file.path).rstrip(path.ext(file.path)),
                 attrs = {
                     "srcs": [file.path],
-                }
+                },
             )
         else:
             library_srcs.append(file)

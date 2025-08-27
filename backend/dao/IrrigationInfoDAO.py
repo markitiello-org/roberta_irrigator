@@ -1,6 +1,7 @@
 from backend.db.SqlLite import SqlLite
-from backend.datatype.IrrigationInfo import IrrigationInfo  
+from backend.datatype.irrigation_info import IrrigationInfo
 import datetime
+
 
 class IrrigationInfoDAO:
     @staticmethod
@@ -36,7 +37,7 @@ class IrrigationInfoDAO:
         data = SqlLite.get_instance().ExecuteQuery(
             """SELECT * FROM scheduler WHERE zone_id = ?""", [id_irrigator]
         )
-        if data != None:
+        if data is not None:
             list_of_irrigation_info = list()
             for row in data:
                 irrigation_info = IrrigationInfo(
@@ -47,7 +48,7 @@ class IrrigationInfoDAO:
             return list_of_irrigation_info
         else:
             return list()
-        
+
     @staticmethod
     def RemoveIrrigatorInfo(id):
         SqlLite.get_instance().ExecuteQueryNoResult(

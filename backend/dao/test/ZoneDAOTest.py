@@ -1,10 +1,10 @@
-
 import datetime
 import unittest
 from backend.db.SqlLite import SqlLite
 from backend.datatype.Zone import Zone
-from backend.datatype.IrrigationInfo import IrrigationInfo
+from backend.datatype.irrigation_info import IrrigationInfo
 from backend.dao.ZoneDAO import ZoneDAO
+
 
 class TestZoneDAO(unittest.TestCase):
     db = None
@@ -53,6 +53,7 @@ class TestZoneDAO(unittest.TestCase):
         self.assertEqual(irrigator.irrigation_info[0], irrigation_info_to_add_1)
         self.assertEqual(irrigator.irrigation_info[1], irrigation_info_to_add_2)
         self.assertEqual(irrigator.irrigation_info[2], irrigation_info_to_add_3)
+
     def test_edit_zone(self):
         print("==== test edit zone =====")
         zone_to_add = Zone("test4", 4)
@@ -70,7 +71,9 @@ class TestZoneDAO(unittest.TestCase):
         self.assertEqual(irrigator.gpio_pin, 5)
         self.assertEqual(len(irrigator.irrigation_info), 1)
         self.assertEqual(irrigator.irrigation_info[0].for_how_many_seconds, 150)
-        self.assertEqual(irrigator.irrigation_info[0].time_to_start, datetime.time(11, 30, 00, 00))
+        self.assertEqual(
+            irrigator.irrigation_info[0].time_to_start, datetime.time(11, 30, 00, 00)
+        )
 
 
 if __name__ == "__main__":
