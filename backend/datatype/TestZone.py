@@ -13,7 +13,6 @@ class TestInitSqlLite(unittest.TestCase):
     def setUpClass(self):
         print("Setting up the database for IrrigationInfoDAO tests")
         self.db = SqlLite.get_instance()
-        self.db.Init()
         self.db.CreateDb()
 
     @classmethod

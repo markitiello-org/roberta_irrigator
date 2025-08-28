@@ -1,6 +1,6 @@
 py_library(
     name = "IrrigationInfoDAO",
-    srcs = ["IrrigationInfoDAO.py"],
+    srcs = ["irrigation_info_dao.py"],
     visibility = ["//backend/dao:__subpackages__"],
     deps = [
         "//backend/datatype:IrrigationInfo",

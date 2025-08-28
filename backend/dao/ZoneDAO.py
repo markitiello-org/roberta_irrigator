@@ -1,6 +1,6 @@
-import backend.datatype.Zone as Zone
+from backend.datatype.Zone import Zone
 from backend.db.SqlLite import SqlLite
-from backend.dao.IrrigationInfoDAO import IrrigationInfoDAO
+from backend.dao.irrigation_info_dao import IrrigationInfoDAO
 
 
 class ZoneDAO:
@@ -21,7 +21,7 @@ class ZoneDAO:
             for data in rows:
                 print("got data: ", data)
                 zone = Zone(
-                    data[1], data[2], IrrigationInfoDAO.GetIrrigationInfo(data[0])
+                    data[1], data[2], IrrigationInfoDAO.get_irrigation_info(data[0])
                 )
                 print("got zone: ", zone)
                 zone.SetId(data[0])
@@ -33,7 +33,7 @@ class ZoneDAO:
             )
             if data is not None:
                 zone = Zone(
-                    data[0][1], data[0][2], IrrigationInfoDAO.GetIrrigationInfo(id)
+                    data[0][1], data[0][2], IrrigationInfoDAO.get_irrigation_info(id)
                 )
                 zone.SetId(data[0][0])
                 return zone
@@ -58,4 +58,4 @@ class ZoneDAO:
         zone.Print()
         for irrigation_info_element in zone.irrigation_info:
             print(f"Adding irrigation info {irrigation_info_element} to zone {zone.id}")
-            IrrigationInfoDAO.AddNewIrrigatorInfo(irrigation_info_element, zone.id)
+            IrrigationInfoDAO.add_new_irrigator_info(irrigation_info_element, zone.id)
