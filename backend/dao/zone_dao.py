@@ -1,3 +1,7 @@
+"""
+This module provides the ZoneDAO class for managing zone records in the database.
+"""
+
 from backend.datatype.Zone import Zone
 from backend.db.SqlLite import SqlLite
 from backend.dao.irrigation_info_dao import IrrigationInfoDAO
@@ -10,14 +14,24 @@ class ZoneDAO:
     """
 
     @staticmethod
-    def RemoveIrrigators():
+    def remove_irrigators():
+        """
+        Remove all zone records from the database.
+        """
         SqlLite.get_instance().ExecuteQueryNoResult(""" DELETE FROM zone """)
 
     @staticmethod
-    def GetZoneById(id=None):
-        if id is None:
+    def get_zone_by_id(zone_id=None):
+        """
+        Retrieve one or all zone records from the database.
+        Args:
+            zone_id (int, optional): The ID of the zone to retrieve. If None, retrieves all zones.
+        Returns:
+            Zone or list[Zone] or None: The zone(s) matching the query.
+        """
+        if zone_id is None:
             rows = SqlLite.get_instance().ExecuteQuery("""SELECT * FROM zone""")
-            returned_zone = list()
+            returned_zone = []
             for data in rows:
                 print("got data: ", data)
                 zone = Zone(
@@ -27,25 +41,28 @@ class ZoneDAO:
                 zone.SetId(data[0])
                 returned_zone.append(zone)
             return returned_zone
-        else:
-            data = SqlLite.get_instance().ExecuteQuery(
-                """SELECT * FROM zone where id = ?""", [id]
+        data = SqlLite.get_instance().ExecuteQuery(
+            """SELECT * FROM zone where id = ?""", [zone_id]
+        )
+        if data is not None:
+            zone = Zone(
+                data[0][1], data[0][2], IrrigationInfoDAO.get_irrigation_info(zone_id)
             )
-            if data is not None:
-                zone = Zone(
-                    data[0][1], data[0][2], IrrigationInfoDAO.get_irrigation_info(id)
-                )
-                zone.SetId(data[0][0])
-                return zone
-            else:
-                return None
+            zone.SetId(data[0][0])
+            return zone
+        return None
 
     @staticmethod
-    def AddNewIrrigator(zone: Zone):
+    def add_new_irrigator(zone: Zone):
+        """
+        Add a new zone or update an existing zone in the database, and add related irrigation info.
+        Args:
+            zone (Zone): The zone object to add or update.
+        """
         if zone.id == -1:
             num = SqlLite.get_instance().ExecuteQuery("""SELECT COUNT(*) FROM zone""")
-            id = int(num[0][0]) + 1
-            zone.SetId(id)
+            new_zone_id = int(num[0][0]) + 1
+            zone.SetId(new_zone_id)
             SqlLite.get_instance().ExecuteQueryNoResult(
                 """INSERT INTO zone VALUES (?, ?, ?, ?) """,
                 [zone.id, zone.name, zone.gpio_pin, None],

@@ -11,7 +11,7 @@ py_library(
 
 py_library(
     name = "ZoneDAO",
-    srcs = ["ZoneDAO.py"],
+    srcs = ["zone_dao.py"],
     visibility = ["//backend:__subpackages__"],
     deps = [
         "//backend/dao:IrrigationInfoDAO",
