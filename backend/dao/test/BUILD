@@ -5,8 +5,8 @@ py_test(
 )
 
 py_test(
-    name = "ZoneDAOTest",
-    srcs = ["ZoneDAOTest.py"],
+    name = "zone_dao_test",
+    srcs = ["zone_dao_test.py"],
     deps = ["//backend/dao:ZoneDAO"],
 )
 
