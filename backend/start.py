@@ -7,7 +7,7 @@ from backend.datatype.Zone import Zone
 from backend.datatype.irrigation_info import IrrigationInfo
 from backend.db.SqlLite import SqlLite
 from backend.hw_io.gpio import PiGpio
-from backend.dao.ZoneDAO import ZoneDAO
+from backend.dao.zone_dao import ZoneDAO
 import rpyc
 from threading import Thread
 import threading
@@ -26,7 +26,7 @@ class Executor:
     _last_run = None
 
     def LoadZone(self):
-        return ZoneDAO.GetZoneById()
+        return ZoneDAO.get_zone_by_id()
 
     def SetCurrentTimeInformation(self):
         now = datetime.datetime.now()
@@ -191,9 +191,9 @@ class RpcService(rpyc.Service):
             )
             zone_to_add_3.irrigation_info.append(irrigation_info_to_add_1_zone_3)
             zone_to_add_3.irrigation_info.append(irrigation_info_to_add_2_zone_3)
-            ZoneDAO.AddNewIrrigator(zone_to_add_1)
-            ZoneDAO.AddNewIrrigator(zone_to_add_2)
-            ZoneDAO.AddNewIrrigator(zone_to_add_3)
+            ZoneDAO.add_new_irrigator(zone_to_add_1)
+            ZoneDAO.add_new_irrigator(zone_to_add_2)
+            ZoneDAO.add_new_irrigator(zone_to_add_3)
 
     def exposed_start(self):
         if self._executor.AmIRunning():
