@@ -1,26 +1,43 @@
+"""
+Unit tests for PersistentLogDAO: verifies logging and retrieval of persistent log entries.
+"""
+
 import datetime
 from time import sleep
 import unittest
 from backend.db.SqlLite import SqlLite
-from backend.dao.PersistentLogDAO import PersistentLogDAO
+from backend.dao.persistent_log_dao import PersistentLogDAO
 from backend.datatype.log import Log, EventId
 
 
 class TestPersistentLog(unittest.TestCase):
+    """
+    Test suite for PersistentLogDAO database operations.
+    """
+
     db = None
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        """
+        Set up the test database before running tests.
+        """
         print("Setting up the database for IrrigationInfoDAO tests")
-        self.db = SqlLite.get_instance()
-        self.db.CreateDb()
+        cls.db = SqlLite.get_instance()
+        cls.db.CreateDb()
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
+        """
+        Remove the test database after running tests.
+        """
         print("Tearing down the database after IrrigationInfoDAO tests")
-        self.db.RemoveDb()
+        cls.db.RemoveDb()
 
     def test_add_log(self):
+        """
+        Test adding a single log entry and retrieving it from the database.
+        """
         print("==== test add log =====")
         log_to_add = Log(
             zone_id=1,
@@ -28,8 +45,8 @@ class TestPersistentLog(unittest.TestCase):
             event_id=EventId.general,
             log="Test log entry",
         )
-        PersistentLogDAO.AddLog(log_to_add)
-        logs = PersistentLogDAO.GetLogs(1)
+        PersistentLogDAO.add_log(log_to_add)
+        logs = PersistentLogDAO.get_logs(1)
         self.assertNotEqual(len(logs), 0)
         self.assertEqual(len(logs), 1)
         self.assertEqual(logs[0].zone_id, log_to_add.zone_id)
@@ -38,6 +55,9 @@ class TestPersistentLog(unittest.TestCase):
         # self.assertEqual(logs[0], log_to_add)
 
     def test_add_more_then_one_log(self):
+        """
+        Test adding multiple log entries and retrieving them with filters and limits.
+        """
         print("==== test add more than one log =====")
         log_to_add_1 = Log(
             zone_id=2,
@@ -65,15 +85,15 @@ class TestPersistentLog(unittest.TestCase):
             log="Irrigation ended",
         )
 
-        PersistentLogDAO.AddLog(log_to_add_1)
-        PersistentLogDAO.AddLog(log_to_add_2)
-        PersistentLogDAO.AddLog(log_to_add_3)
-        PersistentLogDAO.AddLog(log_to_add_4)
+        PersistentLogDAO.add_log(log_to_add_1)
+        PersistentLogDAO.add_log(log_to_add_2)
+        PersistentLogDAO.add_log(log_to_add_3)
+        PersistentLogDAO.add_log(log_to_add_4)
 
-        logs = PersistentLogDAO.GetLogs(2, number_of_logs_to_get=1)
+        logs = PersistentLogDAO.get_logs(2, number_of_logs_to_get=1)
         self.assertEqual(logs[0], log_to_add_4)
         self.assertEqual(len(logs), 1)
-        logs = PersistentLogDAO.GetLogs(2, EventId.irrigation_start)
+        logs = PersistentLogDAO.get_logs(2, EventId.irrigation_start)
         self.assertEqual(len(logs), 2)
         self.assertEqual(logs[0], log_to_add_3)
         self.assertEqual(logs[1], log_to_add_1)

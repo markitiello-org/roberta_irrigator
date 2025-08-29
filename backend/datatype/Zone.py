@@ -2,7 +2,7 @@ from backend.datatype.irrigation_info import IrrigationInfo
 import datetime
 import logging
 import json
-from backend.dao.PersistentLogDAO import PersistentLogDAO
+from backend.dao.persistent_log_dao import PersistentLogDAO
 from backend.datatype.log import Log, EventId
 from backend.hw_io.gpio import PiGpio
 
@@ -40,7 +40,7 @@ class Zone:
         return current_day_of_the_week in irrigation_info.day_of_the_week
 
     def GetLastIrrigationDate(self):
-        logs = PersistentLogDAO.GetLogs(
+        logs = PersistentLogDAO.get_logs(
             self.id, EventId.irrigation_start, number_of_logs_to_get=1
         )
         if len(logs) != 0:
@@ -69,7 +69,7 @@ class Zone:
         self.LogInformation(f"Open zone {self.name}")
         self._last_irrigation_date = datetime.datetime.now().time()
         PiGpio.instance().OpenPin(self.gpio_pin)
-        PersistentLogDAO.AddLog(
+        PersistentLogDAO.add_log(
             Log(
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),
@@ -84,7 +84,7 @@ class Zone:
         self._last_irrigation_date = None
         self.LogInformation(f"Close zone {self.name}")
         PiGpio.instance().ClosePin(self.gpio_pin)
-        PersistentLogDAO.AddLog(
+        PersistentLogDAO.add_log(
             Log(
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),

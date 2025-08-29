@@ -1,5 +1,5 @@
 """
-This module provides the IrrigationInfoDAO class for managing irrigation 
+This module provides the IrrigationInfoDAO class for managing irrigation
 scheduling data in the database.
 """
 
@@ -10,7 +10,7 @@ import datetime
 
 class IrrigationInfoDAO:
     """
-    Data Access Object for irrigation scheduling information. 
+    Data Access Object for irrigation scheduling information.
     Handles database operations for IrrigationInfo.
     """
 

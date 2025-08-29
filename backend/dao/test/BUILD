@@ -11,7 +11,7 @@ py_test(
 )
 
 py_test(
-    name = "PersistentLogDAOTest",
-    srcs = ["PersistentLogDAOTest.py"],
+    name = "persistent_log_dao_test",
+    srcs = ["persistent_log_dao_test.py"],
     deps = ["//backend/dao:PersistentLogDAO"],
 )

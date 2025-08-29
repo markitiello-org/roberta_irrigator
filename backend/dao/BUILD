@@ -24,7 +24,7 @@ py_library(
 
 py_library(
     name = "PersistentLogDAO",
-    srcs = ["PersistentLogDAO.py"],
+    srcs = ["persistent_log_dao.py"],
     visibility = ["//backend:__subpackages__"],
     deps = [
         "//backend/datatype:Log",

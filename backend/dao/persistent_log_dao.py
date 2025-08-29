@@ -1,13 +1,29 @@
+"""
+This module provides the PersistentLogDAO class for managing persistent log entries in the database.
+"""
+
 import datetime
 from backend.db.SqlLite import SqlLite
 from backend.datatype.log import EventId, Log
 
 
 class PersistentLogDAO:
+    """
+    Data Access Object for persistent log operations.
+    Handles adding and retrieving log entries from the database.
+    """
+
     @staticmethod
-    def AddLog(log: Log):
+    def add_log(log: Log):
+        """
+        Adds a log entry to the database.
+        Args:
+            log (Log): The log entry to add.
+        Raises:
+            ValueError: If a general event id is used without a log message.
+        """
         if log.event_id == EventId.general and log.log is None:
-            raise Exception("Used a general event id but no text has been provided")
+            raise ValueError("Used a general event id but no text has been provided")
         log.date_time = datetime.datetime.now()
         SqlLite.get_instance().ExecuteQueryNoResult(
             """INSERT INTO log VALUES (?, ?, ?, ?)""",
@@ -20,9 +36,18 @@ class PersistentLogDAO:
         )
 
     @staticmethod
-    def GetLogs(
+    def get_logs(
         zone_id: int = None, event_id: EventId = None, number_of_logs_to_get: int = None
     ):
+        """
+        Retrieves log entries from the database, optionally filtered by zone, event, and limit.
+        Args:
+            zone_id (int, optional): The zone ID to filter logs.
+            event_id (EventId, optional): The event ID to filter logs.
+            number_of_logs_to_get (int, optional): The maximum number of logs to retrieve.
+        Returns:
+            list[Log]: List of log entries matching the criteria.
+        """
         query = "SELECT * FROM log"
         params = []
         conditions = []
