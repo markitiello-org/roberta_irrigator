@@ -3,7 +3,7 @@
 import unittest
 import datetime
 
-from backend.datatype.Zone import Zone
+from backend.datatype.zone import Zone
 from backend.datatype.irrigation_info import IrrigationInfo
 from backend.db.SqlLite import SqlLite
 
@@ -33,13 +33,13 @@ class TestZone(unittest.TestCase):
         ]
         zone = Zone("test", 1, irrigation_info)
         now = datetime.time(10, 19, 0, 0)
-        zone.CheckIfNeedToOpen(now, 3)
-        self.assertEqual(zone.IsOpen(), False)
+        zone.check_if_need_to_open(now, 3)
+        self.assertEqual(zone.is_open(), False)
         now = datetime.time(10, 20, 1, 0)
-        zone.CheckIfNeedToOpen(now, 3)
-        self.assertEqual(zone.IsOpen(), True)
+        zone.check_if_need_to_open(now, 3)
+        self.assertEqual(zone.is_open(), True)
         now = datetime.time(10, 21, 59, 0)
-        self.assertEqual(zone.IsOpen(), True)
+        self.assertEqual(zone.is_open(), True)
         print("Zone should be open now")
 
     def test_time_to_close_then_zone_is_closed(self):
@@ -50,12 +50,12 @@ class TestZone(unittest.TestCase):
         ]
         zone = Zone("test", 1, irrigation_info)
         now = datetime.time(10, 19, 0, 0)
-        zone.CheckIfNeedToOpen(now, 3)
+        zone.check_if_need_to_open(now, 3)
         now = datetime.time(10, 20, 1, 0)
-        zone.CheckIfNeedToOpen(now, 3)
+        zone.check_if_need_to_open(now, 3)
         now = datetime.time(10, 22, 1, 0)
-        zone.CheckIfNeedToClose(now)
-        self.assertEqual(zone.IsOpen(), False)
+        zone.check_if_need_to_close(now)
+        self.assertEqual(zone.is_open(), False)
 
     def test_zone_opened_for_more_than_allowed_time_then_zone_is_closed(self):
         """Test that the zone closes if open for too long."""
@@ -65,15 +65,15 @@ class TestZone(unittest.TestCase):
         ]
         zone = Zone("test", 1, irrigation_info)
         now = datetime.time(10, 19, 0, 0)
-        zone.OverrideOpen()
-        self.assertEqual(zone.IsOpen(), True)
+        zone.override_open()
+        self.assertEqual(zone.is_open(), True)
         now = datetime.datetime.now() + datetime.timedelta(minutes=1)
-        zone.CheckIfNeedToOpen(now.time(), 3)
-        zone.CheckIfNeedToClose(now.time())
-        self.assertEqual(zone.IsOpen(), True)
+        zone.check_if_need_to_open(now.time(), 3)
+        zone.check_if_need_to_close(now.time())
+        self.assertEqual(zone.is_open(), True)
         now = now + datetime.timedelta(minutes=1, seconds=1)
-        zone.CheckEmergencyClosing(now.time())
-        self.assertEqual(zone.IsOpen(), False)
+        zone.check_emergency_closing(now.time())
+        self.assertEqual(zone.is_open(), False)
 
     def test_try_to_open_zone_with_right_time_but_wrong_day_then_zone_is_closed(self):
         """Test that the zone does not open on the wrong day."""
@@ -83,8 +83,8 @@ class TestZone(unittest.TestCase):
         ]
         zone = Zone("test", 1, irrigation_info)
         now = datetime.time(10, 19, 0, 0)
-        zone.CheckIfNeedToOpen(now, 1)
-        self.assertEqual(zone.IsOpen(), False)
+        zone.check_if_need_to_open(now, 1)
+        self.assertEqual(zone.is_open(), False)
 
     def test_open_in_override_then_stop_then_zone_is_closed(self):
         """Test override open then stop closes the zone."""
@@ -93,11 +93,11 @@ class TestZone(unittest.TestCase):
             IrrigationInfo(datetime.time(22, 20, 0, 0), 120, [2, 3, 4, 5, 6]),
         ]
         zone = Zone("test", 1, irrigation_info)
-        zone.OverrideOpen()
-        self.assertEqual(zone.IsOpen(), True)
+        zone.override_open()
+        self.assertEqual(zone.is_open(), True)
 
-        zone.OverrideOpen(False)
-        self.assertEqual(zone.IsOpen(), False)
+        zone.override_open(False)
+        self.assertEqual(zone.is_open(), False)
 
     def test_override_close_and_right_time_then_zone_is_closed(self):
         """Test override close prevents opening at right time."""
@@ -106,10 +106,10 @@ class TestZone(unittest.TestCase):
             IrrigationInfo(datetime.time(22, 20, 0, 0), 120, [2, 3, 4, 5, 6]),
         ]
         zone = Zone("test", 1, irrigation_info)
-        zone.OverrideClose()
+        zone.override_close()
         now = datetime.time(10, 20, 1, 0)
-        zone.CheckIfNeedToOpen(now, 2)
-        self.assertEqual(zone.IsOpen(), False)
+        zone.check_if_need_to_open(now, 2)
+        self.assertEqual(zone.is_open(), False)
 
     def test_override_close_and_try_to_open_in_override_then_zone_is_closed(self):
         """Test override close prevents override open."""
@@ -118,9 +118,9 @@ class TestZone(unittest.TestCase):
             IrrigationInfo(datetime.time(22, 20, 0, 0), 120, [2, 3, 4, 5, 6]),
         ]
         zone = Zone("test", 1, irrigation_info)
-        zone.OverrideClose()
-        zone.OverrideOpen()
-        self.assertEqual(zone.IsOpen(), False)
+        zone.override_close()
+        zone.override_open()
+        self.assertEqual(zone.is_open(), False)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 py_library(
     name = "Zone",
-    srcs = ["Zone.py"],
+    srcs = ["zone.py"],
     visibility = ["//backend:__subpackages__"],
     deps = [
         ":IrrigationInfo",

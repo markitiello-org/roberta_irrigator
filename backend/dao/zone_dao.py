@@ -2,7 +2,7 @@
 This module provides the ZoneDAO class for managing zone records in the database.
 """
 
-from backend.datatype.Zone import Zone
+from backend.datatype.zone import Zone
 from backend.db.SqlLite import SqlLite
 from backend.dao.irrigation_info_dao import IrrigationInfoDAO
 
@@ -38,7 +38,7 @@ class ZoneDAO:
                     data[1], data[2], IrrigationInfoDAO.get_irrigation_info(data[0])
                 )
                 print("got zone: ", zone)
-                zone.SetId(data[0])
+                zone.set_id(data[0])
                 returned_zone.append(zone)
             return returned_zone
         data = SqlLite.get_instance().ExecuteQuery(
@@ -48,7 +48,7 @@ class ZoneDAO:
             zone = Zone(
                 data[0][1], data[0][2], IrrigationInfoDAO.get_irrigation_info(zone_id)
             )
-            zone.SetId(data[0][0])
+            zone.set_id(data[0][0])
             return zone
         return None
 
@@ -62,7 +62,7 @@ class ZoneDAO:
         if zone.id == -1:
             num = SqlLite.get_instance().ExecuteQuery("""SELECT COUNT(*) FROM zone""")
             new_zone_id = int(num[0][0]) + 1
-            zone.SetId(new_zone_id)
+            zone.set_id(new_zone_id)
             SqlLite.get_instance().ExecuteQueryNoResult(
                 """INSERT INTO zone VALUES (?, ?, ?, ?) """,
                 [zone.id, zone.name, zone.gpio_pin, None],
@@ -72,7 +72,7 @@ class ZoneDAO:
                 """UPDATE zone SET name=?, gpio_pin=?, last_irrigation_time=? WHERE id = ?""",
                 [zone.name, zone.gpio_pin, zone.last_irrigation_date, zone.id],
             )
-        zone.Print()
+        zone.print_zone()
         for irrigation_info_element in zone.irrigation_info:
             print(f"Adding irrigation info {irrigation_info_element} to zone {zone.id}")
             IrrigationInfoDAO.add_new_irrigator_info(irrigation_info_element, zone.id)

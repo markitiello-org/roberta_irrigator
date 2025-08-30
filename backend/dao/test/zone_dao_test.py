@@ -6,7 +6,7 @@ and retrieving zone records and their irrigation info.
 import datetime
 import unittest
 from backend.db.SqlLite import SqlLite
-from backend.datatype.Zone import Zone
+from backend.datatype.zone import Zone
 from backend.datatype.irrigation_info import IrrigationInfo
 from backend.dao.zone_dao import ZoneDAO
 
