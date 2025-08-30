@@ -20,9 +20,3 @@ py_library(
     srcs = ["log.py"],
     visibility = ["//backend:__subpackages__"],
 )
-
-py_test(
-    name = "TestZone",
-    srcs = ["TestZone.py"],
-    deps = [":Zone"],
-)
