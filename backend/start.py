@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 import time
-from backend.datatype.Zone import Zone
+from backend.datatype.zone import Zone
 from backend.datatype.irrigation_info import IrrigationInfo
 from backend.db.SqlLite import SqlLite
 from backend.hw_io.gpio import PiGpio
@@ -35,19 +35,19 @@ class Executor:
 
     def CheckIfHaveToOpenAnyZone(self):
         for zone in self.zone_list:
-            zone.CheckIfNeedToOpen(self._current_time, self._current_day_of_the_week)
+            zone.check_if_need_to_open(self._current_time, self._current_day_of_the_week)
 
     def CheckIfHaveToCloseAnyZone(self):
         for zone in self.zone_list:
-            zone.CheckIfNeedToClose(self._current_time)
+            zone.check_if_need_to_close(self._current_time)
 
     def CheckIfAZoneIsOpenForTooManyTime(self):
         for zone in self.zone_list:
-            zone.CheckEmergencyClosing(self._current_time)
+            zone.check_emergency_closing(self._current_time)
 
     def CloseAll(self):
         for zone in self.zone_list:
-            zone.OverrideOpen(False)
+            zone.override_open(False)
 
     def Wait(self):
         time.sleep(self._sleep_milliseconds_time / 1000)
