@@ -1,6 +1,6 @@
 py_test(
-    name = "IrrigationInfoDAOTest",
-    srcs = ["IrrigationInfoDAOTest.py"],
+    name = "irrigation_info_dao_test",
+    srcs = ["irrigation_info_dao_test.py"],
     deps = ["//backend/dao:IrrigationInfoDAO"],
 )
 
