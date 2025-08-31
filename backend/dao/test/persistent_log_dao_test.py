@@ -42,7 +42,7 @@ class TestPersistentLog(unittest.TestCase):
         log_to_add = Log(
             zone_id=1,
             date_time=datetime.datetime.now(),
-            event_id=EventId.general,
+            event_id=EventId.GENERAL,
             log="Test log entry",
         )
         PersistentLogDAO.add_log(log_to_add)
@@ -62,26 +62,26 @@ class TestPersistentLog(unittest.TestCase):
         log_to_add_1 = Log(
             zone_id=2,
             date_time=None,
-            event_id=EventId.irrigation_start,
+            event_id=EventId.IRRIGATION_START,
             log="Irrigation started",
         )
         log_to_add_2 = Log(
             zone_id=2,
             date_time=None,
-            event_id=EventId.irrigation_stop,
+            event_id=EventId.IRRIGATION_STOP,
             log="Irrigation ended",
         )
         sleep(1)
         log_to_add_3 = Log(
             zone_id=2,
             date_time=None,
-            event_id=EventId.irrigation_start,
+            event_id=EventId.IRRIGATION_START,
             log="Irrigation started",
         )
         log_to_add_4 = Log(
             zone_id=2,
             date_time=None,
-            event_id=EventId.irrigation_stop,
+            event_id=EventId.IRRIGATION_STOP,
             log="Irrigation ended",
         )
 
@@ -93,7 +93,7 @@ class TestPersistentLog(unittest.TestCase):
         logs = PersistentLogDAO.get_logs(2, number_of_logs_to_get=1)
         self.assertEqual(logs[0], log_to_add_4)
         self.assertEqual(len(logs), 1)
-        logs = PersistentLogDAO.get_logs(2, EventId.irrigation_start)
+        logs = PersistentLogDAO.get_logs(2, EventId.IRRIGATION_START)
         self.assertEqual(len(logs), 2)
         self.assertEqual(logs[0], log_to_add_3)
         self.assertEqual(logs[1], log_to_add_1)

@@ -48,7 +48,7 @@ class Zone:
     def get_last_irrigation_date(self):
         """Get the last irrigation start date from logs."""
         logs = PersistentLogDAO.get_logs(
-            self.id, EventId.irrigation_start, number_of_logs_to_get=1
+            self.id, EventId.IRRIGATION_START, number_of_logs_to_get=1
         )
         if len(logs) != 0:
             return logs[0].date_time
@@ -86,7 +86,7 @@ class Zone:
             Log(
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),
-                event_id=EventId.irrigation_start,
+                event_id=EventId.IRRIGATION_START,
                 log=f"Zone {self.name} opened",
             )
         )
@@ -102,7 +102,7 @@ class Zone:
             Log(
                 zone_id=self.id,
                 date_time=datetime.datetime.now(),
-                event_id=EventId.irrigation_stop,
+                event_id=EventId.IRRIGATION_STOP,
                 log=f"Zone {self.name} closed",
             )
         )

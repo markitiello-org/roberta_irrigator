@@ -22,7 +22,7 @@ class PersistentLogDAO:
         Raises:
             ValueError: If a general event id is used without a log message.
         """
-        if log.event_id == EventId.general and log.log is None:
+        if log.event_id == EventId.GENERAL and log.log is None:
             raise ValueError("Used a general event id but no text has been provided")
         log.date_time = datetime.datetime.now()
         SqlLite.get_instance().ExecuteQueryNoResult(
