@@ -8,6 +8,7 @@ from backend.dao.persistent_log_dao import PersistentLogDAO
 from backend.datatype.log import Log, EventId
 from backend.hw_io.gpio import PiGpio
 
+
 # pylint: disable=too-many-instance-attributes
 class Zone:
     """Represents an irrigation zone with scheduling and control logic."""
@@ -130,7 +131,9 @@ class Zone:
         self._last_irrigation_date = None
         self._is_override_close = True
 
-    def check_if_need_to_open(self, current_time: datetime.time, current_day_of_the_week):
+    def check_if_need_to_open(
+        self, current_time: datetime.time, current_day_of_the_week
+    ):
         """Check if the zone needs to be opened based on schedule."""
         if self._is_open:
             self.log_information("Already Open", True)

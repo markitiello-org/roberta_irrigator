@@ -35,7 +35,9 @@ class Executor:
 
     def CheckIfHaveToOpenAnyZone(self):
         for zone in self.zone_list:
-            zone.check_if_need_to_open(self._current_time, self._current_day_of_the_week)
+            zone.check_if_need_to_open(
+                self._current_time, self._current_day_of_the_week
+            )
 
     def CheckIfHaveToCloseAnyZone(self):
         for zone in self.zone_list:

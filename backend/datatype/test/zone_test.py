@@ -10,6 +10,7 @@ from backend.db.SqlLite import SqlLite
 
 class TestZone(unittest.TestCase):
     """Test cases for Zone behavior."""
+
     db = None
 
     @classmethod
