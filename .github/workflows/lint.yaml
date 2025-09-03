@@ -18,6 +18,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Install Aspect CLI (manual)
+      run: |
+        VERSION="2025.11.0" 
+        wget "https://github.com/aspect-build/aspect-cli/releases/download/${VERSION}/aspect-linux_arm64"      
+        chmod +x aspect_linux_amd64
+        sudo mv aspect_linux_amd64 /usr/local/bin/aspect
+        
     - name: Cache Bazel
       uses: actions/cache@v3
       with:
