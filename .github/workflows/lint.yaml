@@ -19,13 +19,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install Aspect CLI (specific version)
-      run: |
-        VERSION="5.9.0"
-        curl -o aspect "https://aspect-cli.s3.us-east-2.amazonaws.com/aspect/${VERSION}/linux_amd64/aspect"
-        chmod +x aspect
-        sudo mv aspect /usr/local/bin/aspect
-        
     - name: Cache Bazel
       uses: actions/cache@v3
       with:
