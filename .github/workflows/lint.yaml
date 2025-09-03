@@ -23,7 +23,8 @@ jobs:
         VERSION="5.9.0"
         curl -o aspect "https://aspect-cli.s3.us-east-2.amazonaws.com/aspect/${VERSION}/linux_amd64/aspect"
         chmod +x aspect
-        mv aspect /usr/local/bin/aspect
+        sudo mv aspect /usr/local/bin/aspect
+        
     - name: Cache Bazel
       uses: actions/cache@v3
       with:
