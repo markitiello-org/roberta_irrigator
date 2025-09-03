@@ -25,15 +25,15 @@ jobs:
         curl -o aspect "https://aspect-cli.s3.us-east-2.amazonaws.com/aspect/${VERSION}/linux_amd64/aspect"
         chmod +x aspect
         mv aspect /usr/local/bin/aspect
-        - name: Cache Bazel
-          uses: actions/cache@v3
-          with:
-            path: |
-              ~/.cache/bazel
-              ~/.cache/bazelisk
-            key: ${{ runner.os }}-bazel-${{ hashFiles('.bazelversion', 'WORKSPACE', 'MODULE.bazel') }}
-            restore-keys: |
-              ${{ runner.os }}-bazel-
+    - name: Cache Bazel
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/bazel
+          ~/.cache/bazelisk
+        key: ${{ runner.os }}-bazel-${{ hashFiles('.bazelversion', 'WORKSPACE', 'MODULE.bazel') }}
+        restore-keys: |
+          ${{ runner.os }}-bazel-
 
     - name: Setup Bazelisk
       run: |
