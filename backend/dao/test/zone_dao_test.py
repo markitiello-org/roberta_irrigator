@@ -60,7 +60,8 @@ class TestZoneDAO(unittest.TestCase):
 
     def test_add_zone_with_more_than_one_irrigation_info(self):
         """
-        Test adding a zone with multiple irrigation info entries and verifying retrieval.
+        Test adding a zone with multiple irrigation info entries and 
+        verifying retrieval.
         """
         print("==== test add zone with multiple irrigation info =====")
         zone_to_add = Zone("test3", 3)
@@ -100,6 +101,25 @@ class TestZoneDAO(unittest.TestCase):
         self.assertEqual(
             irrigator.irrigation_info[0].time_to_start, datetime.time(11, 30, 00, 00)
         )
+
+    def test_get_all_zones(self):
+        """
+        Test retrieving all zones from the database.
+        """
+        print("==== test get all zones =====")
+        ZoneDAO.remove_irrigators()
+        zones = ZoneDAO.get_zone_by_id()
+        self.assertGreaterEqual(len(zones), 0)
+        zone_to_add = Zone("test5", 4)
+        irrigation_info_to_add = IrrigationInfo(datetime.time(10, 20, 00, 00), 120)
+        zone_to_add.irrigation_info.append(irrigation_info_to_add)
+        zone_to_add_2 = Zone("test5", 4)
+        irrigation_info_to_add_2 = IrrigationInfo(datetime.time(10, 20, 00, 00), 120)
+        zone_to_add_2.irrigation_info.append(irrigation_info_to_add_2)
+        ZoneDAO.add_new_irrigator(zone_to_add_2)
+        ZoneDAO.add_new_irrigator(zone_to_add)
+        zones = ZoneDAO.get_zone_by_id()
+        self.assertEqual(len(zones), 2)
 
 
 if __name__ == "__main__":

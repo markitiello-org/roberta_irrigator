@@ -1,5 +1,6 @@
 """
-This module provides the PersistentLogDAO class for managing persistent log entries in the database.
+This module provides the PersistentLogDAO class for managing persistent log 
+entries in the database.
 """
 
 import datetime
@@ -40,18 +41,19 @@ class PersistentLogDAO:
         zone_id: int = None, event_id: EventId = None, number_of_logs_to_get: int = None
     ):
         """
-        Retrieves log entries from the database, optionally filtered by zone, event, and limit.
+        Retrieves log entries from the database, optionally filtered by zone, 
+        event, and limit.
         Args:
             zone_id (int, optional): The zone ID to filter logs.
             event_id (EventId, optional): The event ID to filter logs.
-            number_of_logs_to_get (int, optional): The maximum number of logs to retrieve.
+            number_of_logs_to_get (int, optional): The maximum number of logs 
+            to retrieve.
         Returns:
             list[Log]: List of log entries matching the criteria.
         """
         query = "SELECT * FROM log"
         params = []
         conditions = []
-
         if zone_id is not None:
             conditions.append("zone_id = ?")
             params.append(zone_id)
