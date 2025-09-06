@@ -1,0 +1,49 @@
+name: Lint Check
+
+# workflow triggers on pull requests and pushes to main and develop branches
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Run Aspect Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install Aspect CLI (manual)
+      run: |
+        VERSION="2025.11.0" 
+        wget "https://github.com/aspect-build/aspect-cli/releases/download/${VERSION}/aspect-linux_amd64"      
+        chmod +x aspect-linux_amd64
+        sudo mv aspect-linux_amd64 /usr/local/bin/aspect
+
+    - name: Cache Bazel
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/bazel
+          ~/.cache/bazelisk
+        key: ${{ runner.os }}-bazel-${{ hashFiles('.bazelversion', 'WORKSPACE', 'MODULE.bazel') }}
+        restore-keys: |
+          ${{ runner.os }}-bazel-
+
+    - name: Setup Bazelisk
+      run: |
+        curl -LO "https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64"
+        chmod +x bazelisk-linux-amd64
+        sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
+
+    - name: Verify Bazel version
+      run: bazel version
+
+    - name: Run Aspect Lint
+      run: aspect lint //...
